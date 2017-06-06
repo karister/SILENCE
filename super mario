@@ -122,10 +122,10 @@ again :int mario=888;
 		}
 		for(i=0;i<sizeof(bombnum)/sizeof(int);i++)
 		{
-			X1=bombX[i];
-			Y1=bombY[i];
-			dist1=(X2-x)*(X2-x)+(Y2-y)*(Y2-y);
-			if(dist1<100)
+			X2=bombX[i];
+			Y2=bombY[i];
+			dist2=(X2-x)*(X2-x)+(Y2-y)*(Y2-y);
+			if(dist2<100)
 			{
 				clearGameUI();
 				createImage(1,"gameover2.png");
