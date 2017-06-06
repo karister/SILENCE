@@ -1,0 +1,155 @@
+#include <yzkgame.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<windows.h>
+#include<math.h>
+#define true 1
+#define NUM 25//金币数量
+#define num 5//炸弹数量
+#pragma comment( linker, "/subsystem:\"console\" /entry:\"mainCRTStartup\"" )
+#pragma comment(lib, "YZKGame.lib")
+
+void gameMain(void)
+{
+again :int mario=888;
+	int coin=0,bomb=0;
+	int x,y;
+	int i,j,n;
+	int coinnum[NUM],bombnum[num];//精灵的编号
+	int coinX[NUM],bombX[num];//精灵的X坐标
+	int coinY[NUM],bombY[num];//精灵的Y坐标
+	setGameTitle("KARSITER");
+	setGameSize(1920, 1080);
+	createImage(0,"大片草地.png");//背景图
+	//对精灵MARIO的定义
+	createSprite(mario,"mario");
+	setSpritePosition(mario,95,500);
+	playSpriteAnimate(mario,"walk");
+	setSpriteFlipX(mario,1);
+	//完毕定义
+	//分别给精灵编号
+	for(n=0;n<NUM;n++)
+		coinnum[n]=n;
+	for(n=0;n<num;n++)
+		bombnum[n]=n+500;
+	//完毕编号
+	srand((unsigned)time(NULL));//设置时间种子，获取当前时间
+	for(j=0;j<sizeof(coinnum)/sizeof(int);j++)//生成金币随机坐标
+	{
+		int X=getSpriteWidth(coin);
+		int Y=getSpriteHeight(coin);
+		int M=getGameWidth();
+		int N=getGameHeight();
+		int x=rand()*(M-X)/RAND_MAX;//常数
+		int y=rand()*(N-Y)/RAND_MAX;
+		coinX[j]=x;
+		coinY[j]=y;
+	
+	}
+	//Sleep(100);
+	//srand((unsigned)time(NULL));
+
+	for(j=0;j<sizeof(bombnum)/sizeof(int);j++)//生成炸弹随机坐标
+	{
+		int X=getSpriteWidth(bomb);
+		int Y=getSpriteHeight(bomb);
+		int M=getGameWidth();
+		int N=getGameHeight();
+		int x=(rand()*(M-X)/RAND_MAX);//常数
+		int y=(rand()*(N-Y)/RAND_MAX);
+		bombX[j]=x;
+		bombY[j]=y;
+	}
+	for(i=0;i<sizeof(coinnum)/sizeof(int);i++)//创建金币精灵
+	{
+		createSprite(coinnum[i],"coin");
+		playSpriteAnimate(coinnum[i],"rotate");
+		setSpritePosition(coinnum[i],coinX[i],coinY[i]);
+	}
+	for(i=0;i<sizeof(bombnum)/sizeof(int);i++)//创建炸弹精灵
+	{
+		createSprite(bombnum[i],"bomb");
+		playSpriteAnimate(bombnum[i],"laser");
+		setSpritePosition(bombnum[i],bombX[i],bombY[i]);
+	}
+	//键盘操作
+	while(true)
+	{
+		int ch=getPressedNormalKeyCode();//获取键盘输入
+		int x=getSpriteX(mario);
+		int y=getSpriteY(mario);
+		float x0=(getGameWidth()/2)-400;
+		float y0=getGameHeight()/2;
+		double X1,X2,Y1,Y2;
+		double dist1,dist2;
+		//键盘控制精灵走动
+		{
+			if(UP==ch)
+			{
+				y+=3;
+			}
+			else if(DOWN==ch)
+			{
+				y-=3;
+			}
+			else if(LEFT==ch)
+			{
+				x-=3;
+				setSpriteFlipX(mario,0);
+			}
+			else if(RIGHT==ch)
+			{
+				x+=3;
+				setSpriteFlipX(mario,1);
+			}
+			else if(ch==0)
+			setSpritePosition(mario,x,y);
+		}
+		setSpritePosition(mario,x,y);
+		//over
+		//判断是否吃到金币or炸弹
+		for(i=0;i<sizeof(coinnum)/sizeof(int);i++)
+		{
+			X1=coinX[i];
+			Y1=coinY[i];
+			dist1=(X1-x)*(X1-x)+(Y1-y)*(Y1-y);
+			if(dist1<100)
+			{
+				hideSprite(coinnum[i]);
+				playSound("按钮点击2.mp3",0);
+			}
+		}
+		for(i=0;i<sizeof(bombnum)/sizeof(int);i++)
+		{
+			X1=bombX[i];
+			Y1=bombY[i];
+			dist1=(X2-x)*(X2-x)+(Y2-y)*(Y2-y);
+			if(dist1<100)
+			{
+				clearGameUI();
+				createImage(1,"gameover2.png");
+				playSound("爆炸1.mp3",0);
+				pauseGame(500);
+				playSound("恐怖.mp3",0);
+				pauseGame(3000);
+			}
+		}
+
+
+
+		
+		
+		
+
+
+
+		pauseGame(10);
+	}
+	//完毕（死循环）
+}
+int main(void)
+{
+	rpInit(gameMain);
+	return 0;
+}
