@@ -1,0 +1,73 @@
+int rectangle1=0,rectangle2=1;//定义俩矩形
+	setGameSize(1000,1000);
+	createImage(rectangle1,"rectangle1.png");
+	setImagePosition(rectangle1,100,150);
+
+	createImage(rectangle2,"rectangle2.png");
+	setImagePosition(rectangle2,200,300);
+	while(true)
+	{
+		int ch=getPressedNormalKeyCode();
+		int x1,x2,y1,y2;//定义俩矩形的坐标（以左下角为准）
+		int width1,width2,height1,height2;//定义俩矩形的长宽
+		int B;
+		x1=getImageX(rectangle1),y1=getImageY(rectangle1);
+		width1=getImageWidth(rectangle1),height1=getImageHeight(rectangle1);
+		//键盘控制rectangle走动
+			if(UP==ch)
+			{
+				y1+=step;
+				
+			}
+			else if(DOWN==ch)
+			{
+				y1-=step;
+				
+			}
+			else if(LEFT==ch)
+			{
+				x1-=step;
+				
+			}
+			else if(RIGHT==ch)
+			{
+				x1+=step;
+				
+			}
+			else if(ch==0)
+				setImagePosition(rectangle1,x1,y1);
+			B=coincidence(x1,y1,width1,height1,x2,y2,width2,height2);
+			if(B==1)
+
+			setImagePosition(rectangle1,x1,y1);
+		Sleep(5);
+	}
+
+	
+	getchar();
+
+
+
+
+}
+BOOL coincidence(int x1,int y1,int width1,int height1,int x2,int y2,int width2,int height2)
+{
+	//BOOL:逻辑变量
+	/*
+	不重合的条件如下：
+	x1在x2上面
+	x1在x2下面
+	x1在x2左边
+	x1在x2右边
+	*/
+	BOOL b1=y1>x2+height2;
+	BOOL b2=y2>x1+height1;
+	BOOL b3=x2>x1+width1;
+	BOOL b4=x1>x2+width2;
+	BOOL cc=(b1==FALSE&&b2==FALSE&&b3==FALSE&&b4==FALSE);
+	//BOOL cc=(!b1&&!b2&&!b3&&!b4==FALSE);//cc==coincidence
+	return cc;//返回逻辑值，TRUE OR FALSE
+
+
+
+}
